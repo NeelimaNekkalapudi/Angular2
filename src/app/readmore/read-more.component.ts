@@ -3,9 +3,8 @@ import { Component, Input, ElementRef, OnChanges} from '@angular/core';
 @Component({
   selector: 'read-more',
   template: `
-        <div [innerHTML]="currentText">
-        </div>
-            <a [class.hidden]="hideToggle" (click)="toggleView()">Read {{isCollapsed? 'more':'less'}}</a>
+        <div [innerHTML]="currentText" [style.color]="isCollapsed?'red':'blue'"></div>
+        <a [hidden]="hideToggle" (click)="toggleView()">Read {{isCollapsed? 'more':'less'}}</a>
     `
 })
 
@@ -13,7 +12,7 @@ export class ReadMoreComponent implements OnChanges {
   @Input() text: string;
   @Input() maxLength: number;
   currentText: string;
-  hideToggle: boolean = true;
+  public hideToggle: boolean = true;
 
   public isCollapsed: boolean = true;
 
@@ -22,14 +21,14 @@ export class ReadMoreComponent implements OnChanges {
   }
   toggleView() {
     this.isCollapsed = !this.isCollapsed;
-    this.determineView();
+    this.updateView();
   }
-  determineView() {
+  updateView() {
     if (this.text.length <= this.maxLength) {
       this.currentText = this.text;
       this.isCollapsed = false;
       this.hideToggle = true;
-      return;
+      return true;
     }
     this.hideToggle = false;
     if (this.isCollapsed == true) {
@@ -37,9 +36,8 @@ export class ReadMoreComponent implements OnChanges {
     } else if(this.isCollapsed == false)  {
       this.currentText = this.text;
     }
-
   }
   ngOnChanges() {
-    this.determineView();
+    this.updateView();
   }
 }
